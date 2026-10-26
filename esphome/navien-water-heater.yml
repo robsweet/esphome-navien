@@ -2,7 +2,7 @@
 water_heater:
   - platform: navien
     id: navien_water_heater
-    name: "${friendly_name} Water Heater${sensor_suffix}"
-    min_temperature: 98F
+    name: "${device_friendly_name} Water Heater${sensor_suffix}"
+    min_temperature: 95F
     max_temperature: 120F
 

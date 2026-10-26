@@ -1,35 +1,7 @@
 # Basic Config
 
-substitutions:
-  #   # https://esphome.io/guides/configuration-types.html#substitutions
-  device_name: navien-heater # hostname & entity_id
-  friendly_name: "Navien" # Displayed in HA frontend
-  device_description: "Navien Gas Water Heater"
-  tx_pin: GPIO15
-  rx_pin: GPIO13
-  platform: esp8266
-  board: d1_mini
-  external_component_source: components
- 
-
-esphome:
-  # https://esphome.io/components/esphome
-  name: ${device_name}
-  friendly_name: ${friendly_name}
-  project:
-    name: "${project_name}"
-    version: "${project_version}"
-
-${platform}: 
-  board: ${board}
-
 external_components:
-  - source: ${external_component_source}
-
-api:
-
-ota:
-  platform: esphome
+  - source: /config/packages/sensors/navien/components
 
 binary_sensor:
 
@@ -37,54 +9,40 @@ switch:
   - platform: navien
     navien: navien_main
     type: power
-    name: ${friendly_name} Main Power
+    name: ${device_friendly_name} Main Power
     id: main_power
   # "Allow Recirculation" turns on recirculation when the water heater is not in HotButton mode
   - platform: navien
     navien: navien_main
     type: allow_scheduled_recirc
-    name: "${friendly_name} Allow Recirculation"
+    name: "${device_friendly_name} Allow Recirculation"
     id: allow_scheduled_recirc
 
 button:
   - platform: restart
-    name: "${friendly_name} Restart"
+    name: "${device_friendly_name} Restart"
 
 text_sensor:
   - platform: version
-    name: "${friendly_name} ESPHome Version"
+    name: "${device_friendly_name} ESPHome Version"
     id: esphome_version
     hide_timestamp: True
 
-
+  - platform: wifi_info
+    ip_address:
+      id: ip_address
+      name: "${device_friendly_name} IP Address"
+    mac_address:
+      name: "${device_friendly_name} Mac"
+      id: mac_address
 
 climate:
   - platform: navien
     navien: navien_main
     id: navien_climate
     visual:
-      min_temperature: 98F
+      min_temperature: 95F
       max_temperature: 120F
       temperature_step: '1°F'
-    name: "${friendly_name} DHW Set Temperature"
-
-uart:
-  tx_pin: ${tx_pin}
-  rx_pin: ${rx_pin}
-      
-  baud_rate: 19200
-  stop_bits: 1
-  parity: none
-  rx_buffer_size: 8192
-  id: main_hw_uart
-
-logger:
-  level: INFO
-
-
-
-#sensor:
-#packages:
-#  sensors: !include navien-sensors.yml
-    
+    name: "${device_friendly_name} DHW Set Temperature"
 
